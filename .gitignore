@@ -1,0 +1,55 @@
+# extension data
+.segments/
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Environment Variables (NEVER commit)
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/*.log
+logs/*.json
+
+# ML Models (large files)
+models/*.pkl
+models/*.joblib
+models/*.zip
+models/*.pt
+
+# Database
+*.db
+!config/*.db
+
+# Node / Dashboard
+dashboard/node_modules/
+dashboard/.env
+
+# Redis
+dump.rdb
+
+# Docker
+.docker/

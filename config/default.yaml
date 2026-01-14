@@ -1,0 +1,161 @@
+trading:
+  mode: paper
+  pairs:
+    EUR_USD: true                    # Fed vs ECB — benchmark
+    GBP_JPY: true                    # Risk appetite (GBP risk-on, JPY safe haven)
+    AUD_NZD: true                    # Oceanic spread (RBA vs RBNZ)
+    USD_CAD: true                    # Oil proxy (Canada = oil exporter)
+    EUR_GBP: true                    # European relative value (no USD)
+    NZD_JPY: true                    # Carry trade (high-yield vs low-yield)
+    AUD_CAD: true                    # Commodity cross (iron ore vs oil)
+  timeframes:
+    primary: H1
+    secondary:
+    - M15
+    - H4
+    - D1
+  candle_granularities:
+  - M5
+  - M15
+  - H1
+  - H4
+  - D1
+broker:
+  name: capitalcom
+  environment: demo
+  base_url_demo: https://demo-api-capital.backend-capital.com
+  base_url_live: https://api-capital.backend-capital.com
+strategy:
+  trend_following:
+    enabled: true
+    ema_fast: 12
+    ema_slow: 26
+    ema_signal: 9
+    adx_threshold: 20
+    adx_exit_threshold: 0             # disabled — ADX exit killed winners during pullbacks
+    adx_period: 14
+    atr_period: 14
+    atr_stop_multiplier: 1.5
+    atr_tp_multiplier: 10.0           # safety ceiling — trailing stop handles exits
+    hurst_threshold: 0.45             # hard gate: H < 0.45 = mean-reverting → no entry
+    min_confidence: 0.0               # soft influence on sizing, not a hard gate
+    session_filter: false
+    session_start_utc: 7              # fallback for pairs not in PAIR_SESSIONS
+    session_end_utc: 20
+    candle_confirmation: false
+    multi_speed:
+      enabled: true
+      fast_ema: [5, 13]
+      medium_ema: [12, 26]
+      slow_ema: [50, 100]
+      weights: [0.25, 0.50, 0.25]
+      min_signal_strength: 0.3
+      use_kama_slow: false            # EMA 50/100 provides stronger trend signal than KAMA
+    multi_timeframe:
+      confirmation_tf: H4
+      entry_tf: H1
+indicators:
+  ema_periods:
+  - 5
+  - 9
+  - 12
+  - 13
+  - 21
+  - 26
+  - 50
+  - 100
+  - 200
+  rsi_period: 14
+  rsi_overbought: 70
+  rsi_oversold: 30
+  macd_fast: 12
+  macd_slow: 26
+  macd_signal: 9
+  bollinger_period: 20
+  bollinger_std: 2.0
+  adx_period: 14
+  atr_period: 14
+risk:
+  max_drawdown_pct: 10.0
+  max_daily_loss_pct: 3.0
+  max_weekly_loss_pct: 5.0
+  max_position_size_pct: 2.0
+  max_open_positions: 7
+  max_correlated_positions: 2
+  correlation_threshold: 0.7
+  correlation_window: 60
+  default_leverage: 30.0
+  max_margin_usage_pct: 50.0
+  max_margin_per_position_pct: 15.0
+  position_sizing_method: fixed_pct
+  fixed_position_pct: 1.0
+  trade_cooldown_hours: 4                # min hours between trades on the same pair
+  adaptive_min_trades: 50
+  adaptive_lookback: 200
+  volatility_target:
+    enabled: true
+    target_vol: 0.0  # 0 = auto (uses 0.005 / 0.5%)
+    min_scale: 0.5                   # was 0.3 — symmetric with max_scale in log-space
+    max_scale: 2.0                   # was 1.3 — removed negative sizing bias
+  trailing_stop:
+    enabled: true
+    activation_atr: 1.5              # ATR multiples (was activation_pct: 2.0% — never triggered)
+    trail_distance_atr: 1.5          # seamless handoff from break-even (was 2.0 — left 0.5 ATR deadzone)
+  break_even:
+    enabled: true                    # move SL to entry after +1.0 ATR profit
+    activation_atr: 1.0              # earlier lock-in, trailing takes over at +1.5 ATR (was 1.5 — deadzone)
+  max_spread_pips: 3.0
+  slippage_estimate_pips: 0.5            # documentation only — negligible vs 1.5 ATR stop distance on H1
+  drawdown_recovery_enabled: true
+  recovery_position_scale: 0.5
+  recovery_trade_count: 10            # was 20 — faster recovery from drawdown
+  hard_stop_drawdown_pct: 15.0
+  cooloff_hours: 24
+execution:
+  max_retries: 3
+  retry_delay_seconds: 1.0
+  max_retry_delay_seconds: 30.0
+  heartbeat_interval_seconds: 30
+  reconnect_delay_seconds: 5
+  max_order_latency_ms: 1000
+  spread_check_enabled: true
+logging:
+  level: INFO
+  format: json
+  file_rotation_mb: 50
+  file_retention_days: 30
+telegram:
+  enabled: true
+  alerts:
+    new_trade: true
+    trade_closed: true
+    large_drawdown: true
+    connection_lost: true
+    system_error: true
+    daily_summary: true
+  drawdown_alert_threshold_pct: 5.0
+api:
+  host: 0.0.0.0
+  port: 8000
+  cors_origins:
+  - http://localhost:5173
+  - http://localhost:3000
+calendar:
+  enabled: true
+  blackout_hours: 1.0                    # block new entries X hours before high-impact events
+  post_event_boost_hours: 1.0             # boost sizing +25% after events — 1h covers next H1 candle close
+  news_boost_scale: 1.0                  # disabled — no evidence that post-event sizing boost adds edge
+  impact_threshold: High                 # minimum impact to trigger blackout: High, Medium, Low
+  refresh_interval_minutes: 5            # calendar refresh frequency (respects FF rate limit)
+  currency_overrides:
+    USD:
+      blackout_hours: 1.5               # longer blackout for USD (NFP, FOMC)
+backtest:
+  initial_balance: 10000.0
+  commission_pct: 0.0
+  overnight_financing_rate_long: 0.03
+  overnight_financing_rate_short: 0.03
+  walk_forward:
+    train_months: 12
+    test_months: 3
+    step_months: 1
