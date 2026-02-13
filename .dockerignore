@@ -1,0 +1,37 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.ruff_cache
+*.egg-info
+.venv
+venv
+
+# Node
+dashboard/node_modules
+dashboard/dist
+
+# IDE
+.vscode
+.idea
+*.swp
+
+# Environment (secrets!)
+.env
+
+# Logs & data (mounted as volumes)
+logs/
+data/
+models/
+
+# Tests
+tests/
+
+# Docs
+*.md
+LICENSE

@@ -1,0 +1,19 @@
+services:
+  prio:
+    build:
+      context: .
+      target: production
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/api/system/status')"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

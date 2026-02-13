@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  # ---- Trader (main trading loop) ----
+  trader:
+    build:
+      context: .
+      target: trader
+    env_file: .env
+    environment:
+      - TRADING_MODE=${TRADING_MODE:-paper}
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
+
+  # ---- Dashboard (FastAPI + React static) ----
+  dashboard:
+    build:
+      context: .
+      target: production
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
