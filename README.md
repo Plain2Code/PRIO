@@ -2,7 +2,7 @@
 
 # PRIO
 
-### Autonomous Forex Trading Bot
+### Autonomous Forex Trading Bot, Architecture Reference
 
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
@@ -17,17 +17,18 @@
 
 </div>
 
+> **Note:** PRIO is not designed to generate real trading profits. It is an **architecture reference project** that demonstrates how to build a modular, production-grade trading system from the ground up. Every component (strategy, risk management, execution, data pipeline, broker integration, dashboard) is independently developed and replaceable, showcasing clean separation of concerns and event-driven design. Use it as a blueprint for your own systems.
 
 ## Features
 
 ### Strategy Engine
 
-- **Multi-Speed EMA Blending** — Three speed layers (Fast/Medium/Slow) with configurable weights
-- **Higher-Timeframe Confirmation** — H4 confirmation prevents trades against the dominant trend
-- **ADX Gate** — Filters out trendless market phases (threshold: 20)
-- **Hurst Exponent Filter** — Detects mean-reversion regimes and blocks entries when H < 0.45
-- **Session Filter** — Optional restriction to active market hours only
-- **Confidence Scoring** — Dynamic scoring based on signal strength, Hurst and RSI
+- **Multi-Speed EMA Blending** with three speed layers (Fast/Medium/Slow) and configurable weights
+- **Higher-Timeframe Confirmation** using H4 to prevent trades against the dominant trend
+- **ADX Gate** that filters out trendless market phases (threshold: 20)
+- **Hurst Exponent Filter** that detects mean-reversion regimes and blocks entries when H < 0.45
+- **Session Filter** for optional restriction to active market hours only
+- **Confidence Scoring** with dynamic scoring based on signal strength, Hurst and RSI
 
 ### Risk Management
 
@@ -43,16 +44,16 @@
 ### Execution Engine
 
 - Order queue with retry logic and latency monitoring
-- SL/TP verification + automatic repair
+- SL/TP verification and automatic repair
 - Broker-side exit detection (SL/TP hit, margin call)
 - Reconciliation between broker and local database
 
 ### Data Pipeline
 
-- **Multi-Timeframe Candles** — M5, M15, H1, H4, D1 in parallel
-- **Technical Indicators** — EMA, RSI, MACD, Bollinger Bands, ATR, ADX, Hurst, KAMA, Realized Volatility
-- **Correlation Matrix** — Prevents cluster risk on correlated pairs
-- **Economic Calendar** — Forex Factory integration with blackout filter, post-event boost and currency-specific overrides
+- **Multi-Timeframe Candles** supporting M5, M15, H1, H4, D1 in parallel
+- **Technical Indicators** including EMA, RSI, MACD, Bollinger Bands, ATR, ADX, Hurst, KAMA, Realized Volatility
+- **Correlation Matrix** to prevent cluster risk on correlated pairs
+- **Economic Calendar** with Forex Factory integration, blackout filter, post-event boost and currency-specific overrides
 
 
 
@@ -84,10 +85,10 @@
 
 | Pair | Rationale |
 |------|-----------|
-| EUR/USD | Fed vs ECB — benchmark |
+| EUR/USD | Fed vs ECB, the benchmark pair |
 | GBP/JPY | Risk appetite (GBP risk-on, JPY safe haven) |
 | AUD/NZD | Oceanic spread (RBA vs RBNZ) |
-| USD/CAD | Oil proxy (Canada = oil exporter) |
+| USD/CAD | Oil proxy (Canada as oil exporter) |
 | EUR/GBP | European relative value (no USD exposure) |
 | NZD/JPY | Carry trade (high-yield vs low-yield) |
 | AUD/CAD | Commodity cross (iron ore vs oil) |
@@ -100,7 +101,7 @@
 
 - Python 3.12+
 - Node.js 20+ (for the dashboard)
-- Docker & Docker Compose (optional)
+- Docker and Docker Compose (optional)
 
 ### Local Setup
 
@@ -170,10 +171,10 @@ The React dashboard provides real-time insights via WebSocket:
 ![Signal Matrix](resources/signal.png)
 
 **Features:**
-- Live equity curve & drawdown visualization
+- Live equity curve and drawdown visualization
 - Open positions with real-time P&L
-- Trade history & performance statistics
-- System status & diagnostics
+- Trade history and performance statistics
+- System status and diagnostics
 - Configuration management
 
 **API Endpoints:**
@@ -199,7 +200,7 @@ The signal matrix shows the current status of each pair in the trading loop:
 | `POSITION_OPEN` | Pair already has an open position |
 | `RISK_BLOCK` | Pre-trade risk check failed |
 | `NEWS_BLOCK` | Economic calendar blackout active |
-| `SIZE_ZERO` | Position size after sizing = 0 (too little equity / high volatility) |
+| `SIZE_ZERO` | Position size after sizing = 0 (too little equity or high volatility) |
 | `COOLDOWN` | Trade cooldown still active |
 | `EXEC_COOLDOWN` | Cooldown after failed execution |
 | `DAILY_LOSS` | Daily loss limit reached |
@@ -214,11 +215,11 @@ The signal matrix shows the current status of each pair in the trading loop:
 
 PRIO sends automatic notifications:
 
-- **Trade Alerts** — New trades & closed positions
-- **Drawdown Warnings** — When the alert threshold is exceeded (5%)
-- **Kill Switch** — Immediate notification on trading halt
-- **Daily Summary** — Daily performance report
-- **System Errors** — Errors & connection losses
+- **Trade Alerts** for new trades and closed positions
+- **Drawdown Warnings** when the alert threshold is exceeded (5%)
+- **Kill Switch** with immediate notification on trading halt
+- **Daily Summary** with a daily performance report
+- **System Errors** for errors and connection losses
 
 ---
 
@@ -260,6 +261,6 @@ docker compose -f docker-compose.prod.yml up -d
 
 <div align="center">
 
-**PRIO** — Built for autonomous trading.
+**PRIO** Modular trading architecture, built to learn from.
 
 </div>
