@@ -163,13 +163,6 @@ All strategy, risk, and system parameters are configured centrally in `config/de
 
 ---
 
-## Dashboard
-
-The React dashboard provides real-time insights via WebSocket:
-
-![Dashboard Overview](resources/dashboard-overview.png)
-![Signal Matrix](resources/signal.png)
-
 **Features:**
 - Live equity curve and drawdown visualization
 - Open positions with real-time P&L
